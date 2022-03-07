@@ -1,3 +1,6 @@
+# app
+logs/
+
 # node
 build/
 node_modules/

@@ -1,0 +1,42 @@
+#!/usr/bin/env python
+import os
+import subprocess
+
+import click
+import waitress
+
+HOST = os.environ.get("BACKEND_HOST", "127.0.0.1")
+PORT = os.environ.get("BACKEND_PORT", 5000)
+
+
+@click.command()
+@click.option("--production", is_flag=True)
+def start(production):
+    """Start backend server.
+
+    Parameters
+    ----------
+    production : bool, optional
+        Defaults to False.
+    """
+    subprocess.check_call(["python3", "setup.py", "install"])
+
+    from api import main, logger
+
+    _logger = logger.setup(__name__)
+    _logger.info(
+        "Starting backend server:\n\tProduction: %s\n\tHost: %s\n\tPort: %s",
+        production,
+        HOST,
+        PORT,
+    )
+    if production:
+        waitress.serve(main.app, host=HOST, port=PORT)
+
+    else:
+        # requires the FLASK_APP environment variable ot be set
+        subprocess.check_call(["flask", "run", "--host", HOST, "--port", PORT])
+
+
+if __name__ == "__main__":
+    start()
