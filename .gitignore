@@ -1,5 +1,6 @@
 # app
 logs/
+public/static
 
 # node
 build/
