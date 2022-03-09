@@ -6,7 +6,7 @@ import click
 import waitress
 
 HOST = os.environ.get("BACKEND_HOST", "127.0.0.1")
-PORT = os.environ.get("BACKEND_PORT", 5000)
+PORT = os.environ.get("BACKEND_PORT", 3000)
 
 
 @click.command()

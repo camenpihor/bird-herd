@@ -11,7 +11,7 @@ from flask import Flask, Response, request
 
 from api import resources as api_resources, logger
 
-FRONTEND_ADDRESS = os.environ.get("FRONTEND_ADDRESS", None)
+FRONTEND_ADDRESS = os.environ.get("FRONTEND_ADDRESS", "http://localhost:3000")
 BIRDS_FILENAME = "birds.csv.gz"
 
 app = Flask("backend_api")  # pylint: disable=invalid-name
