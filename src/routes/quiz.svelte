@@ -7,7 +7,7 @@
         const res = await fetch(`http://127.0.0.1:5000/api/random/ma/50`);
         birds = await res.json();
         console.log(birds);
-});
+    });
 </script>
 
 <main>
@@ -26,7 +26,9 @@ img {
   display: block;
   margin-left: auto;
   margin-right: auto;
-  width: 300px;
-  height: 300px
+  min-width: 30vw;
+  min-height: 30vh;
+  max-width: 70vw;
+  max-height: 70vh;
 }
 </style>
