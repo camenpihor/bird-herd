@@ -1,6 +1,6 @@
 # app
 logs/
-public/birds
+public/birds/
 
 # node
 build/
