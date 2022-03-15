@@ -1,6 +1,6 @@
 # app
 logs/
-public/static
+public/birds
 
 # node
 build/
@@ -8,4 +8,4 @@ node_modules/
 package-lock.json
 
 # svelte
-.svelte-kit/
+.svelte-kit/**
