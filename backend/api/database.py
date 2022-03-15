@@ -1,6 +1,7 @@
 from contextlib import contextmanager
 
 import psycopg2
+from psycopg2.extras import RealDictCursor
 
 from . import logger
 
@@ -9,12 +10,11 @@ _logger = logger.setup(__name__)
 
 @contextmanager
 def connect(url, **connection_kwargs):
+    connection = psycopg2.connect(url, **connection_kwargs)
+    cursor = connection.cursor()
     try:
-        connection = psycopg2.connect(url, **connection_kwargs)
-        cursor = connection.cursor()
-        yield connection, cursor
+        yield cursor
     finally:
-        connection.commit()
         cursor.close()
         connection.close()
 
@@ -48,7 +48,7 @@ def get_random_birds(state, n_birds, n_images, url):
         WHERE random_index <= %s
         ;
     """
-    with connect(url, curcursor_factorysor=psycopg2.extras.RealDictCursor) as (_, cursor):
+    with connect(url, cursor_factory=RealDictCursor) as cursor:
         cursor.execute(query, (state, n_birds, n_images))
         return cursor.fetchall()
 
@@ -81,7 +81,7 @@ def get_most_common_birds(state, n_birds, n_images, url):
         WHERE random_index <= %s
         ;
     """
-    with connect(url, curcursor_factorysor=psycopg2.extras.RealDictCursor) as (_, cursor):
+    with connect(url, cursor_factory=RealDictCursor) as cursor:
         cursor.execute(query, (state, n_birds, n_images))
         return cursor.fetchall()
 
@@ -105,7 +105,7 @@ def get_specific_birds(birds, n_images, url):
         ;
     """
     birds = tuple(birds) if isinstance(birds, (tuple, list)) else (birds,)
-    with connect(url, curcursor_factorysor=psycopg2.extras.RealDictCursor) as (_, cursor):
+    with connect(url, cursor_factory=RealDictCursor) as cursor:
         cursor.execute(query, (birds, n_images))
         return cursor.fetchall()
 
@@ -115,7 +115,7 @@ def get_genus(genus, n_images, url):
         WITH
             genus_birds AS (
                 SELECT programmatic_name
-                FROM stats
+                FROM birds
                 WHERE LOWER(genus) = %s
             ),
             randomized_images AS (
@@ -136,7 +136,7 @@ def get_genus(genus, n_images, url):
         WHERE random_index <= %s
         ;
     """
-    with connect(url, curcursor_factorysor=psycopg2.extras.RealDictCursor) as (_, cursor):
+    with connect(url, cursor_factory=RealDictCursor) as cursor:
         cursor.execute(query, (genus.lower(), n_images))
         return cursor.fetchall()
 
@@ -149,7 +149,7 @@ def mark_image_for_deletion(filepath, url):
         RETURNING programmatic_name
         ;
     """
-    with connect(url, curcursor_factorysor=psycopg2.extras.RealDictCursor) as (_, cursor):
+    with connect(url, cursor_factory=RealDictCursor) as cursor:
         cursor.execute(query, (filepath,))
         if cursor.rowcount > 0:
             _logger.info(

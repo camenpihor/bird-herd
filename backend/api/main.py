@@ -4,10 +4,12 @@ import os
 
 from flask import Flask, Response, request
 
-from . import resources as database, logger
+from . import database, logger
 
 FRONTEND_ADDRESS = os.environ.get("FRONTEND_ADDRESS", "http://localhost:3000")
-DATABASE_URL = os.environ.get("DATABASE_URL", "postgresql://camen@localhost:5432")
+DATABASE_URL = os.environ.get(
+    "DATABASE_URL", "postgresql://camen@localhost:5432/bird_herd"
+)
 BIRDS_FILENAME = "birds.csv.gz"
 
 app = Flask("backend_api")  # pylint: disable=invalid-name
@@ -23,6 +25,7 @@ def ping_test():
 @app.route("/api/random/<state>/<int:num_birds>")
 def random(state, num_birds):
     """Return random sample of N birds in state."""
+    state = f"USA-{state.upper()}"
     _logger.info(
         "Getting 1 image for each of %d random birds in %s...",
         num_birds,
@@ -37,19 +40,20 @@ def random(state, num_birds):
 @app.route("/api/common/<state>/<int:num_birds>")
 def common(state, num_birds):
     """Return N most common birds in state."""
+    state = f"USA-{state.upper()}"
     _logger.info(
-        "Getting 1 image for each of %d most common birds in %s...", num_birds, state
+        "Getting 1 image for each of the %d most common birds in %s...", num_birds, state
     )
-    birds = database.get_common_birds(
+    birds = database.get_most_common_birds(
         state=state, n_birds=num_birds, n_images=1, url=DATABASE_URL
     )
     return _json_response(birds)
 
 
-@app.route("/api/genus")
-def genus(state, num_birds):
+@app.route("/api/genus/<genus>")
+def genus(genus):
     """Return birds from the same genus."""
-    _logger.info("Getting 1 image for each bird in %s...", genus)
+    _logger.info("Getting 1 image for each bird in the genus %s...", genus)
     birds = database.get_genus(genus=genus, n_images=1, url=DATABASE_URL)
     return _json_response(birds)
 
