@@ -1,6 +1,7 @@
 # app
 logs/
 public/birds/
+documentation/resources/all-stats-regional-2021.csv.gz
 
 # node
 build/

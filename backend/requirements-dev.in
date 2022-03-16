@@ -1,8 +1,11 @@
 black ~= 22.1
 callisto ~= 0.7
 ipykernel ~= 5.4
+pillow ~= 9.0
 pip-tools ~= 6.5
 pydocstyle ~= 6.1
 pylint ~= 2.12
 pytest ~= 7.0
 pytest-cov ~= 3.0
+sqlalchemy ~= 1.4
+tqdm ~= 4.63
